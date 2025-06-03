@@ -2,14 +2,14 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+    return res.status(405).json({ error: "Method Not Allowed" });
   }
 
   const userMessage = req.body.message;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: "Missing GEMINI_API_KEY env variable." });
+    return res.status(500).json({ error: "GEMINI_API_KEY is not set" });
   }
 
   try {
@@ -23,10 +23,10 @@ export default async function handler(req, res) {
       }
     ]);
 
-    const reply = result.response.text();
-    res.status(200).json({ response: reply });
-  } catch (error) {
-    console.error("Gemini API error:", error.message);
-    res.status(500).json({ error: error.message });
+    const text = result.response.text();
+    res.status(200).json({ response: text });
+  } catch (err) {
+    console.error("Gemini Error:", err.message);
+    res.status(500).json({ error: "Gemini API Error: " + err.message });
   }
 }
