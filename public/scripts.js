@@ -20,20 +20,21 @@ async function sendMessage() {
     const res = await fetch("/api/chat", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: userText }),
+      body: JSON.stringify({ message: userText })
     });
 
     const data = await res.json();
-    addMessage("Bot", data.response || "❌ No response.");
+    addMessage("Bot", data.response || "❌ No response from Gemini.");
   } catch (err) {
     console.error(err);
-    addMessage("Bot", "❌ Error talking to server.");
+    addMessage("Bot", "❌ Error contacting server.");
   }
 }
 
 sendButton.addEventListener("click", sendMessage);
-chatInput.addEventListener("keydown", (e) => {
+chatInput.addEventListener("keydown", e => {
   if (e.key === "Enter") {
+    e.preventDefault();
     sendMessage();
   }
 });

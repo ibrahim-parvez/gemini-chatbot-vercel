@@ -5,34 +5,28 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { message } = req.body;
+  const userMessage = req.body.message;
   const apiKey = process.env.GEMINI_API_KEY;
 
   if (!apiKey) {
-    return res.status(500).json({ error: "Missing GEMINI_API_KEY" });
+    return res.status(500).json({ error: "Missing GEMINI_API_KEY env variable." });
   }
 
-  const genAI = new GoogleGenerativeAI(apiKey);
-
   try {
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     const result = await model.generateContent([
       {
         role: "user",
-        parts: [
-          {
-            text: `You are an assistant for a homelessness awareness project called Real Eyes Realize. 
-Answer thoughtfully and clearly. User question: ${message}`,
-          },
-        ],
-      },
+        parts: [{ text: userMessage }]
+      }
     ]);
 
-    const response = result.response.text();
-    res.status(200).json({ response });
+    const reply = result.response.text();
+    res.status(200).json({ response: reply });
   } catch (error) {
-    console.error("Gemini error:", error.message);
+    console.error("Gemini API error:", error.message);
     res.status(500).json({ error: error.message });
   }
 }
