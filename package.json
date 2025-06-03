@@ -1,5 +1,4 @@
 {
-  "name": "gemini-chatbot-vercel",
   "type": "module",
   "dependencies": {
     "@google/generative-ai": "^0.5.0"

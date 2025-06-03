@@ -3,7 +3,9 @@ const chatInput = document.getElementById("chat-input");
 const sendButton = document.getElementById("send-button");
 
 function addMessage(sender, text) {
-  chatBox.innerHTML += `<p><strong>${sender}:</strong> ${text}</p>`;
+  const p = document.createElement("p");
+  p.innerHTML = `<strong>${sender}:</strong> ${text}`;
+  chatBox.appendChild(p);
   chatBox.scrollTop = chatBox.scrollHeight;
 }
 
@@ -22,16 +24,16 @@ async function sendMessage() {
     });
 
     const data = await res.json();
-    addMessage("Bot", data.response || "❌ No response from Gemini.");
-  } catch (error) {
-    addMessage("Bot", "❌ Error connecting to chatbot.");
+    addMessage("Bot", data.response || "❌ No response.");
+  } catch (err) {
+    console.error(err);
+    addMessage("Bot", "❌ Error talking to server.");
   }
 }
 
 sendButton.addEventListener("click", sendMessage);
 chatInput.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
-    e.preventDefault();
     sendMessage();
   }
 });
